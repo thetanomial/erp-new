@@ -1,26 +1,34 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { toast } from 'react-toastify';
+import LoadingSpinner from '../assets/LoadingSpinner';
 
 const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = true; 
+  const { state } = useContext(AuthContext);
+  const [showSpinner, setShowSpinner] = useState(true);
 
-  const {state} = useContext(AuthContext)
+  useEffect(() => {
+    // Ensure the spinner shows for at least 2 seconds
+    const timer = setTimeout(() => {
+      setShowSpinner(false);
+    }, 500);
 
-  
-console.log(state)
-    if (state.loading) {
-        return <p>loading...</p>
-    }
+    return () => clearTimeout(timer); // Cleanup the timeout
+  }, []);
 
-  // If not authenticated, redirect to login page
-  if (!state.currentUser || state.currentUser.role!=="user") {
-    toast.error("Unauthorized")
+  // Show spinner if loading or ensuring the minimum spinner delay
+  if (state.loading || showSpinner) {
+    return <LoadingSpinner />;
+  }
+
+  // If user is not authenticated or role is not "user", navigate to login
+  if (!state.currentUser || state.currentUser.role !== "user") {
+    toast.error("Unauthorized. Please log in.");
     return <Navigate to="/login" />;
   }
 
-  // If authenticated, render the protected content (children)
+  // If authenticated and has correct role, render the protected content
   return children;
 };
 

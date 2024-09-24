@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import AccountsSidebar from './accounts/AccountsSidebar';
+import UserSocialMediaSidebar from './social_media/UserSocialMediaSidebar';
+import { toast } from 'react-toastify';
 
 // Styled Components
 const DashboardContainer = styled.div`
@@ -17,19 +19,24 @@ const Sidebar = styled.div`
   color: white;
   padding: 1rem;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  border-radius: 8px; /* Rounded corners */
 `;
 
 const SidebarLink = styled(Link)`
   display: block;
+  background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent white background */
   color: white;
-  padding: 10px;
+  padding: 15px 20px; /* Increased padding for larger clickable area */
   text-decoration: none;
-  margin-bottom: 10px;
+  margin-bottom: 15px; /* Increased margin for spacing between links */
   border-radius: 4px;
-  transition: background-color 0.3s;
+  font-size: 16px; /* Increased font size */
+  font-weight: bold; /* Bold font for better visibility */
+  transition: background-color 0.3s, transform 0.2s; /* Added transform transition for hover effect */
 
   &:hover {
-    background-color: #0056b3;
+    background-color: rgba(255, 255, 255, 0.2); /* Lighter background on hover */
+    transform: translateY(-2px); /* Subtle lift effect on hover */
   }
 `;
 
@@ -46,13 +53,9 @@ const Navbar = styled.div`
   align-items: center;
   background-color: #007bff;
   color: white;
-  padding: 10px 20px;
+  padding: 15px 20px; /* Increased padding for a better appearance */
   margin-bottom: 20px; /* Space below the navbar */
   border-radius: 5px; /* Rounded corners */
-`;
-
-const Title = styled.h2`
-  color: #333;
 `;
 
 const LinkButton = styled.button`
@@ -62,9 +65,10 @@ const LinkButton = styled.button`
   text-decoration: underline;
   cursor: pointer;
   margin-right: 15px;
-  
+
   &:hover {
     color: #0056b3;
+    transform: scale(1.05); /* Slightly enlarge on hover */
   }
 `;
 
@@ -80,10 +84,12 @@ const UserDashboard = () => {
 
   const showGoBackButton = location.pathname.startsWith('/user-dashboard/') && location.pathname !== '/user-dashboard/';
 
-
   const renderSidebarLinks = () => {
     if (location.pathname.startsWith('/user-dashboard/accounts')) {
       return <AccountsSidebar />;
+    }
+    if (location.pathname.startsWith('/user-dashboard/social_media')) {
+      return <UserSocialMediaSidebar />;
     }
     
     return (
@@ -97,7 +103,6 @@ const UserDashboard = () => {
   return (
     <DashboardContainer>
       <Sidebar>
-        <Title>Welcome {state?.currentUser?.name}</Title>
         {renderSidebarLinks()}
 
         <SidebarLink onClick={() => {
@@ -106,14 +111,14 @@ const UserDashboard = () => {
             type: "LOGOUT_USER"
           });
           navigate("/login");
+          toast.info("You have been logged out successfully.");
         }}>
           Logout
         </SidebarLink>
       </Sidebar>
       <MainContent>
         <Navbar>
-          <h3>User Dashboard</h3>
-          {/* You can add more navbar items here */}
+          <h1>{state?.currentUser?.name}</h1>
           <div>
             <Link to="/user-dashboard/overview" style={{ color: 'white', marginRight: '15px' }}>
               Overview
@@ -123,9 +128,8 @@ const UserDashboard = () => {
             </Link>
 
             {showGoBackButton && (
-            <LinkButton onClick={() => navigate(-1)}>Go back</LinkButton>
-          )}
-            
+              <LinkButton onClick={() => navigate(-1)}>Go back</LinkButton>
+            )}
           </div>
         </Navbar>
         <Outlet /> {/* Renders child route components */}

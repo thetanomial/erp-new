@@ -11,6 +11,8 @@ import { ToastContainer, toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 import UserAccountsHome from './pages/user/accounts/UserAccountsHome'
+import UserSocialMediaHome from './pages/user/social_media/UserSocialMediaHome'
+import ServiceValidator from './components/ServiceValidator'
 const router = createBrowserRouter([{
   path : "/login",
   element : <Login />
@@ -30,8 +32,19 @@ const router = createBrowserRouter([{
     },
     {
       path : 'accounts',
-      element : <UserAccountsHome />
+      element : <ServiceValidator service={"accounts"}><UserAccountsHome /></ServiceValidator>
+    },
+    {
+      path : 'social_media',
+      element : <ServiceValidator service={"social_media"}><UserSocialMediaHome /></ServiceValidator>,
+      children : [
+        {
+          path : 'social_media_strategies',
+          element : <h3>Social Media strategies</h3>
+        }
+      ]
     }
+
   ]
 }
 

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useNavigate, Link } from 'react-router-dom';
 import { getCurrentUser, login } from '../../api/authService';
 import { AuthContext } from '../../contexts/AuthContext';
+import { toast } from 'react-toastify';
 
 // Styled Components
 const Container = styled.div`
@@ -95,11 +96,12 @@ const Login = () => {
       })
 
       navigate("/user-dashboard")
+      toast.success("You have been logged in.")
 
 
     } catch (error) {
       // Handle errors and update the error state
-      setError('Invalid credentials, please try again.');
+      toast.error('Invalid credentials, please try again.');
     }
   };
 

@@ -18,7 +18,7 @@ const AuthProvider = ({children})=>{
     const [state,dispatch] = useReducer(reducer,initialState)
 
 
-
+    
     useEffect(() => {
         const fetchCurrentUser = async () => {
             const token = localStorage.getItem('token'); // Get token from localStorage
